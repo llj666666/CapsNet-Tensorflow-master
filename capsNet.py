@@ -42,8 +42,23 @@ class CapsNet(object):
 
     def build_arch(self):
         with tf.variable_scope('Conv1_layer'):
+            conv_init1 = tf.contrib.layers.conv2d(self.X, num_outputs=128,
+                                             kernel_size=3, stride=1,
+                                             padding='VALID')
+            conv_init2 = tf.contrib.layers.conv2d(conv_init1, num_outputs=64,
+                                             kernel_size=3, stride=1,
+                                             padding='VALID')
+            conv_init3 = tf.contrib.layers.conv2d(conv_init2, num_outputs=32,
+                                             kernel_size=3, stride=1,
+                                             padding='VALID')
+            conv_init3=tf.reshape(conv_init3,shape=(cfg.batch_size,28,28,1))
+
+
+
+
+        with tf.variable_scope('Conv1_layer'):
             # Conv1, [batch_size, 20, 20, 256]
-            conv1 = tf.contrib.layers.conv2d(self.X, num_outputs=256,
+            conv1 = tf.contrib.layers.conv2d(conv_init3, num_outputs=256,
                                              kernel_size=9, stride=1,
                                              padding='VALID')
             assert conv1.get_shape() == [cfg.batch_size, 20, 20, 256]

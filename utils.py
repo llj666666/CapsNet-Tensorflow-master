@@ -65,18 +65,22 @@ def load_myimg(batch_size, is_training=True):
                     img_in=misc.imread(fd)
 
                     # imgall.append(loaded)
-                    imgall.append(img_in)
-                    y.append([i,j%3])#标签
-                    # i
-                    # 0=碱度0.6
-                    # 1=碱度0.8
-                    # 2=碱度1.0，
-                    # 3=碱度1.2
-                    #
-                    # j%3
-                    # 0=中心部位
-                    # 1=1/4部位
-                    # 2=边缘部位
+                    imgall.append(img_in/255.)
+
+                    #添加标签
+                    if i<4:
+                        label=i*3+(j%3)
+                        y.append(label)
+                        # i
+                        # 0=碱度0.6
+                        # 1=碱度0.8
+                        # 2=碱度1.0，
+                        # 3=碱度1.2
+                        #
+                        # j%3
+                        # 0=中心部位
+                        # 1=1/4部位
+                        # 2=边缘部位
 
 
 
@@ -90,14 +94,20 @@ def load_myimg(batch_size, is_training=True):
         trainX=imgall[:72]#前3个文件夹训练
         trainY=y[:72]
 
-        trX = trainX / 255.
+        trX = trainX
         trY = trainY
 
-        valX = imgall[72:72+24 ] / 255.#附件4做为验证集
+        valX = imgall[72:72+24 ]#附件4做为验证集
         valY = y[72:72+24]
 
         num_tr_batch = 72 // batch_size
         num_val_batch = 24 // batch_size
+
+        trX=np.array(trX).astype(np.float32)
+        trY=np.array(trY).astype(np.int32)
+        valX=np.array(valX).astype(np.float32)
+        valY=np.array(valY).astype(np.int32)
+
 
         return trX, trY, num_tr_batch, valX, valY, num_val_batch
     # else:
@@ -167,7 +177,7 @@ def get_batch_data(dataset, batch_size, num_threads):
     elif dataset == 'fashion-mnist':
         trX, trY, num_tr_batch, valX, valY, num_val_batch = load_fashion_mnist(batch_size, is_training=True)
     elif dataset=="myimg":
-        trX, trY, num_tr_batch, valX, valY, num_val_batch = load_fashion_mnist(batch_size, is_training=True)
+        trX, trY, num_tr_batch, valX, valY, num_val_batch = load_myimg(batch_size, is_training=True)
     data_queues = tf.train.slice_input_producer([trX, trY])
     X, Y = tf.train.shuffle_batch(data_queues, num_threads=num_threads,
                                   batch_size=batch_size,
