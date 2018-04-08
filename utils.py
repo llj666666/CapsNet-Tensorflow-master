@@ -4,7 +4,7 @@ import numpy as np
 import tensorflow as tf
 
 import scipy.misc as misc
-
+import random
 
 
 def load_mnist(batch_size, is_training=True):
@@ -94,14 +94,29 @@ def load_myimg(batch_size, is_training=True):
 
         # trainY = loaded[8:].reshape((60000)).astype(np.int32)
 
-        trainX=imgall[:72]#前3个文件夹训练
-        trainY=y[:72]
+        data_list=imgall[:-24]#前4个文件夹有验证
+        trainY=y[:]
 
-        trX = trainX
-        trY = trainY
+        index=[]#用来打乱的下标
+        for i in range(len(data_list)):
+            index.append(i)
+        random.shuffle(index)
+        print()
 
-        valX = imgall[72:72+24 ]#附件4做为验证集
-        valY = y[72:72+24]
+        trX=[]
+        trY = []
+        valX=[]
+        valY=[]
+        for i in range(len(data_list)):
+            if i<len(data_list)-24:#后24个用来验证
+                trX.append(data_list[index[i]])
+                trY.append(trainY[index[i]])
+            else:
+                valX.append(data_list[index[i]])
+                valY.append(trainY[index[i]])
+
+
+
 
         num_tr_batch = 72 // batch_size
         num_val_batch = 24 // batch_size
@@ -114,21 +129,27 @@ def load_myimg(batch_size, is_training=True):
         valX=np.array(valX).astype(np.float32)
         valY=np.array(valY).astype(np.int32)
 
-        #
+
+
 
 
         return trX, trY, num_tr_batch, valX, valY, num_val_batch
-    # else:
-        # fd = open(os.path.join(path, 't10k-images-idx3-ubyte'))
-        # loaded = np.fromfile(file=fd, dtype=np.uint8)
-        # teX = loaded[16:].reshape((10000, 28, 28, 1)).astype(np.float)
-        #
-        # fd = open(os.path.join(path, 't10k-labels-idx1-ubyte'))
-        # loaded = np.fromfile(file=fd, dtype=np.uint8)
-        # teY = loaded[8:].reshape((10000)).astype(np.int32)
-        #
-        # num_te_batch = 10000 // batch_size
-        # return teX / 255., teY, num_te_batch
+    else:
+        fd = open(os.path.join(path, 't10k-images-idx3-ubyte'))
+        loaded = np.fromfile(file=fd, dtype=np.uint8)
+        teX = loaded[16:].reshape((10000, 28, 28, 1)).astype(np.float)
+
+        fd = open(os.path.join(path, 't10k-labels-idx1-ubyte'))
+        loaded = np.fromfile(file=fd, dtype=np.uint8)
+        teY = loaded[8:].reshape((10000)).astype(np.int32)
+
+        num_te_batch = 10000 // batch_size
+
+
+
+
+
+        return teX / 255., teY, num_te_batch
 
 
 
