@@ -96,7 +96,7 @@ def load_myimg(batch_size, is_training=True):
         valX=[]
         valY=[]
         for i in range(len(data_list)):
-            if i<len(data_list)-24:#后24个用来验证
+            if i<len(data_list)-24*2:#后24个用来验证
                 trX.append(data_list[index[i]])
                 trY.append(trainY[index[i]])
             else:
@@ -121,20 +121,7 @@ def load_myimg(batch_size, is_training=True):
 
 
     else:
-        #测试取附件5
-        #读图片
-        # dirname=apath+"附件5/256x256/"
-        # list_img = os.listdir(dirname)
-        # list_img.sort()
-        # for i in range(len(list_img)):
-        #     fd=dirname+list_img[i]
-        #     try:
-        #         img_in = misc.imread(fd)
-        #         imgall.append(img_in / 255.)
-        #     except:
-        #         pass
-
-        # 目录
+        #目录
         for i in range(1):
             num=1
             dirname = "附件%d/256x256/"%num
@@ -181,6 +168,57 @@ def load_myimg(batch_size, is_training=True):
         valX = np.array(valX).astype(np.float32)
         valY = np.array(valY).astype(np.int32)
         return valX, valY, num_val_batch
+
+
+        # #附件5
+        # for i in range(1):
+        #     num=5
+        #     dirname = "附件%d/256x256/"%num
+        #     list_img = os.listdir(apath + dirname)
+        #     # 排序
+        #     list_img.sort()
+        #     # 读取图片
+        #     for j in range(len(list_img)):
+        #         try:
+        #             fd = apath + dirname + list_img[j]
+        #             # loaded = np.fromfile(file=fd, dtype=np.uint8)
+        #             img_in = misc.imread(fd)
+        #             img_in=img_in[:,:,:3]
+        #             # imgall.append(loaded)
+        #             imgall.append(img_in / 255.)
+        #
+        #             # 添加标签，附件5随便填，暂时没想改代码
+        #             label = (num-2)*3 + (j % 3)
+        #             y.append(label)
+        #             # i
+        #             # 0=碱度0.6
+        #             # 1=碱度0.8
+        #             # 2=碱度1.0，
+        #             # 3=碱度1.2
+        #             #
+        #             # j%3
+        #             # 0=中心部位
+        #             # 1=1/4部位
+        #             # 2=边缘部位
+        #         except:
+        #             pass
+        #
+        # # trainY = loaded[8:].reshape((60000)).astype(np.int32)
+        #
+        # data_list = imgall[:]  # 前4个文件夹有验证
+        # valX = data_list
+        # valY = y
+        #
+        # num_val_batch = 24 // batch_size
+        #
+        # if num_val_batch == 0: num_val_batch = 1
+        #
+        # # trX = np.array(trX).astype(np.float32)
+        # # trY = np.array(trY).astype(np.int32)
+        # valX = np.array(valX).astype(np.float32)
+        # valY = np.array(valY).astype(np.int32)
+        # return valX, valY, num_val_batch
+
 
 
 
