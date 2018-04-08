@@ -106,10 +106,15 @@ def load_myimg(batch_size, is_training=True):
         num_tr_batch = 72 // batch_size
         num_val_batch = 24 // batch_size
 
+        if num_tr_batch==0:num_tr_batch=1
+        if num_val_batch==0:num_val_batch=1
+
         trX=np.array(trX).astype(np.float32)
         trY=np.array(trY).astype(np.int32)
         valX=np.array(valX).astype(np.float32)
         valY=np.array(valY).astype(np.int32)
+
+        #
 
 
         return trX, trY, num_tr_batch, valX, valY, num_val_batch

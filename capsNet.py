@@ -42,10 +42,10 @@ class CapsNet(object):
 
     def build_arch(self):
         with tf.variable_scope('Conv1_layer_init'):
-            conv_init1 = tf.contrib.layers.conv2d(self.X, num_outputs=128,
+            conv_init1 = tf.contrib.layers.conv2d(self.X, num_outputs=16,
                                              kernel_size=3, stride=2,
                                              padding='VALID')
-            conv_init2 = tf.contrib.layers.conv2d(conv_init1, num_outputs=64,
+            conv_init2 = tf.contrib.layers.conv2d(conv_init1, num_outputs=8,
                                              kernel_size=4, stride=2,
                                              padding='VALID')
             conv_init3 = tf.contrib.layers.conv2d(conv_init2, num_outputs=1,

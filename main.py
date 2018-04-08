@@ -112,7 +112,7 @@ def evaluation(model, supervisor, num_label):
 
 def main(_):
     tf.logging.info(' Loading Graph...')
-    num_label = 10
+    num_label = 12
     model = CapsNet()
     tf.logging.info(' Graph loaded')
 
