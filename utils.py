@@ -52,10 +52,7 @@ def load_myimg(batch_size, is_training=True):
             dirname="附件%d/256x256/"%(i+1)
             list_img=os.listdir(apath+dirname)
             #排序
-            if i!=4:
-                list_img.sort(key=lambda x: int(x[4:-4]))
-            else:
-                list_img.sort()
+            list_img.sort(key=lambda x: int(x[4:-4]))
 
             #读取图片
             for j in range(len(list_img)):
@@ -89,6 +86,8 @@ def load_myimg(batch_size, is_training=True):
         index=[]#用来打乱的下标
         for i in range(len(data_list)):
             index.append(i)
+        random.shuffle(index)
+        random.shuffle(index)
         random.shuffle(index)
         print()
 
@@ -136,15 +135,12 @@ def load_myimg(batch_size, is_training=True):
         #         pass
 
         # 目录
-        for i in range(4):
-            dirname = "附件%d/256x256/" % (i + 1)
+        for i in range(1):
+            num=1
+            dirname = "附件%d/256x256/"%num
             list_img = os.listdir(apath + dirname)
             # 排序
-            if i != 4:
-                list_img.sort(key=lambda x: int(x[4:-4]))
-            else:
-                list_img.sort()
-
+            list_img.sort(key=lambda x: int(x[4:-4]))
             # 读取图片
             for j in range(len(list_img)):
                 try:
@@ -155,7 +151,7 @@ def load_myimg(batch_size, is_training=True):
                     imgall.append(img_in / 255.)
 
                     # 添加标签
-                    label = i * 3 + (j % 3)
+                    label = (num-1)*3 + (j % 3)
                     y.append(label)
                     # i
                     # 0=碱度0.6
@@ -167,27 +163,14 @@ def load_myimg(batch_size, is_training=True):
                     # 0=中心部位
                     # 1=1/4部位
                     # 2=边缘部位
-
-
-
                 except:
                     pass
 
         # trainY = loaded[8:].reshape((60000)).astype(np.int32)
 
         data_list = imgall[:]  # 前4个文件夹有验证
-        trainY = y[:]
-
-        index = []  # 用来打乱的下标
-        for j in range(4):
-            for i in range(len(data_list)):
-                index.append(i)
-        random.shuffle(index)
-        valX = []
-        valY = []
-        for i in index:
-            valX.append(data_list[i])
-            valY.append(trainY[i])
+        valX = data_list
+        valY = y
 
         num_val_batch = 24 // batch_size
 
