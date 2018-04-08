@@ -121,56 +121,6 @@ def load_myimg(batch_size, is_training=True):
 
 
     else:
-        #目录
-        for i in range(1):
-            num=1
-            dirname = "附件%d/256x256/"%num
-            list_img = os.listdir(apath + dirname)
-            # 排序
-            list_img.sort(key=lambda x: int(x[4:-4]))
-            # 读取图片
-            for j in range(len(list_img)):
-                try:
-                    fd = apath + dirname + list_img[j]
-                    # loaded = np.fromfile(file=fd, dtype=np.uint8)
-                    img_in = misc.imread(fd)
-                    # imgall.append(loaded)
-                    imgall.append(img_in / 255.)
-
-                    # 添加标签
-                    label = (num-1)*3 + (j % 3)
-                    y.append(label)
-                    # i
-                    # 0=碱度0.6
-                    # 1=碱度0.8
-                    # 2=碱度1.0，
-                    # 3=碱度1.2
-                    #
-                    # j%3
-                    # 0=中心部位
-                    # 1=1/4部位
-                    # 2=边缘部位
-                except:
-                    pass
-
-        # trainY = loaded[8:].reshape((60000)).astype(np.int32)
-
-        data_list = imgall[:]  # 前4个文件夹有验证
-        valX = data_list
-        valY = y
-
-        num_val_batch = 24 // batch_size
-
-        if num_val_batch == 0: num_val_batch = 1
-
-        # trX = np.array(trX).astype(np.float32)
-        # trY = np.array(trY).astype(np.int32)
-        valX = np.array(valX).astype(np.float32)
-        valY = np.array(valY).astype(np.int32)
-        return valX, valY, num_val_batch
-
-
-        # #附件5
         # for i in range(1):
         #     num=5
         #     dirname = "附件%d/256x256/"%num
@@ -218,6 +168,66 @@ def load_myimg(batch_size, is_training=True):
         # valX = np.array(valX).astype(np.float32)
         # valY = np.array(valY).astype(np.int32)
         # return valX, valY, num_val_batch
+
+        # 目录
+        for i in range(4):
+            dirname = "附件%d/256x256/" % (i + 1)
+            list_img = os.listdir(apath + dirname)
+            # 排序
+            list_img.sort(key=lambda x: int(x[4:-4]))
+
+            # 读取图片
+            for j in range(len(list_img)):
+                try:
+                    fd = apath + dirname + list_img[j]
+                    # loaded = np.fromfile(file=fd, dtype=np.uint8)
+                    img_in = misc.imread(fd)
+                    # imgall.append(loaded)
+                    imgall.append(img_in / 255.)
+
+                    # 添加标签
+                    label = i * 3 + (j % 3)
+                    y.append(label)
+                    # i
+                    # 0=碱度0.6
+                    # 1=碱度0.8
+                    # 2=碱度1.0，
+                    # 3=碱度1.2
+                    #
+                    # j%3
+                    # 0=中心部位
+                    # 1=1/4部位
+                    # 2=边缘部位
+                except:
+                    pass
+        # trainY = loaded[8:].reshape((60000)).astype(np.int32)
+
+        data_list = imgall[:]  # 前4个文件夹有验证
+        trainY = y[:]
+
+        index = []  # 用来打乱的下标
+        for i in range(4):
+            for i in range(len(data_list)):
+                index.append(i)
+        random.shuffle(index)
+        random.shuffle(index)
+        random.shuffle(index)
+
+        valX = []
+        valY = []
+        for i in index:
+            valX.append(data_list[i])
+            valY.append(trainY[i])
+
+        num_val_batch = 24 // batch_size
+
+        if num_val_batch == 0: num_val_batch = 1
+
+        valX = np.array(valX).astype(np.float32)
+        valY = np.array(valY).astype(np.int32)
+        return valX, valY, num_val_batch
+
+
 
 
 

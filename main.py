@@ -110,7 +110,9 @@ def evaluation(model, supervisor, num_label):
             rt= sess.run(model.argmax_idx, {model.X: teX[start:end]})
             # print("附件5：%s %s"%(rt,"模型05_0.968"))
             print("预测：%s"%(rt))
+
         test_acc = test_acc / (cfg.batch_size * num_te_batch)
+        print("acc=", test_acc)
         fd_test_acc.write(str(test_acc))
         fd_test_acc.close()
         print('Test accuracy has been saved to ' + cfg.results + '/test_acc.csv')
