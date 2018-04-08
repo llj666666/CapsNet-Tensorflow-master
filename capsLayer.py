@@ -113,9 +113,9 @@ def routing(input, b_IJ):
      '''
 
     # W: [1, num_caps_i, num_caps_j * len_v_j, len_u_j, 1]
-    W = tf.get_variable('Weight', shape=(1, 1152, 160, 8, 1), dtype=tf.float32,
+    W = tf.get_variable('Weight', shape=(1, 1152, 144, 8, 1), dtype=tf.float32,
                         initializer=tf.random_normal_initializer(stddev=cfg.stddev))
-    biases = tf.get_variable('bias', shape=(1, 1, 10, 16, 1))
+    biases = tf.get_variable('bias', shape=(1, 1, 12, 12, 1))
 
     # Eq.2, calc u_hat
     # Since tf.matmul is a time-consuming op,
@@ -123,12 +123,12 @@ def routing(input, b_IJ):
     # ops instead. Matmul [a, b] x [b, c] is equal to a series ops as
     # element-wise multiply [a*c, b] * [a*c, b], reduce_sum at axis=1 and
     # reshape to [a, c]
-    input = tf.tile(input, [1, 1, 160, 1, 1])
-    assert input.get_shape() == [cfg.batch_size, 1152, 160, 8, 1]
+    input = tf.tile(input, [1, 1, 144, 1, 1])
+    assert input.get_shape() == [cfg.batch_size, 1152, 144, 8, 1]
 
     u_hat = tf.reduce_sum(W * input, axis=3, keep_dims=True)
-    u_hat = tf.reshape(u_hat, shape=[-1, 1152, 10, 16, 1])
-    assert u_hat.get_shape() == [cfg.batch_size, 1152, 10, 16, 1]
+    u_hat = tf.reshape(u_hat, shape=[-1, 1152, 12, 12, 1])
+    assert u_hat.get_shape() == [cfg.batch_size, 1152, 12, 12, 1]
 
     # In forward, u_hat_stopped = u_hat; in backward, no gradient passed back from u_hat_stopped to u_hat
     u_hat_stopped = tf.stop_gradient(u_hat, name='stop_gradient')
@@ -148,12 +148,12 @@ def routing(input, b_IJ):
                 s_J = tf.multiply(c_IJ, u_hat)
                 # then sum in the second dim, resulting in [batch_size, 1, 10, 16, 1]
                 s_J = reduce_sum(s_J, axis=1, keepdims=True) + biases
-                assert s_J.get_shape() == [cfg.batch_size, 1, 10, 16, 1]
+                assert s_J.get_shape() == [cfg.batch_size, 1, 12, 12, 1]
 
                 # line 6:
                 # squash using Eq.1,
                 v_J = squash(s_J)
-                assert v_J.get_shape() == [cfg.batch_size, 1, 10, 16, 1]
+                assert v_J.get_shape() == [cfg.batch_size, 1, 12, 12, 1]
             elif r_iter < cfg.iter_routing - 1:  # Inner iterations, do not apply backpropagation
                 s_J = tf.multiply(c_IJ, u_hat_stopped)
                 s_J = reduce_sum(s_J, axis=1, keepdims=True) + biases
@@ -165,7 +165,7 @@ def routing(input, b_IJ):
                 # batch_size dim, resulting in [1, 1152, 10, 1, 1]
                 v_J_tiled = tf.tile(v_J, [1, 1152, 1, 1, 1])
                 u_produce_v = reduce_sum(u_hat_stopped * v_J_tiled, axis=3, keepdims=True)
-                assert u_produce_v.get_shape() == [cfg.batch_size, 1152, 10, 1, 1]
+                assert u_produce_v.get_shape() == [cfg.batch_size, 1152, 12, 1, 1]
 
                 # b_IJ += tf.reduce_sum(u_produce_v, axis=0, keep_dims=True)
                 b_IJ += u_produce_v

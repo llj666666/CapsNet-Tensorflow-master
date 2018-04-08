@@ -49,7 +49,7 @@ def load_myimg(batch_size, is_training=True):
         imgall=[]
         y=[]
         for i in range(5):
-            dirname="附件%d/"%(i+1)
+            dirname="附件%d/256x256/"%(i+1)
             list_img=os.listdir(apath+dirname)
             #排序
             if i!=4:
@@ -62,6 +62,9 @@ def load_myimg(batch_size, is_training=True):
                 try:
                     fd=apath+dirname+list_img[j]
                     # loaded = np.fromfile(file=fd, dtype=np.uint8)
+
+
+
                     img_in=misc.imread(fd)
 
                     # imgall.append(loaded)
