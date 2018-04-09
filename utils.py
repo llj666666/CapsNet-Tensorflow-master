@@ -96,7 +96,7 @@ def load_myimg(batch_size, is_training=True):
         valX=[]
         valY=[]
         for i in range(len(data_list)):
-            if i<len(data_list)-24*2:#后24个用来验证
+            if i<len(data_list)-24:#后24个用来验证
                 trX.append(data_list[index[i]])
                 trY.append(trainY[index[i]])
             else:
