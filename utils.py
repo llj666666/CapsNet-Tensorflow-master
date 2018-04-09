@@ -53,7 +53,6 @@ def load_myimg(batch_size, is_training=True):
             list_img=os.listdir(apath+dirname)
             #排序
             list_img.sort(key=lambda x: int(x[4:-4]))
-
             #读取图片
             for j in range(len(list_img)):
                 try:
